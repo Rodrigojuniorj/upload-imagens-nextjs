@@ -49,20 +49,31 @@ export default function Home(): JSX.Element {
     return formatted;
   }, [data]);
 
-  // TODO RENDER ERROR SCREEN
+  if (isLoading && !isError) {
+    return <Loading />;
+  }
+
+  if (!isLoading && isError) {
+    return <Error />;
+  }
 
   return (
     <>
       <Header />
 
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <Box maxW={1120} px={20} mx="auto" my={20}>
-          <CardList cards={formattedData} />
-          {/* TODO RENDER LOAD MORE BUTTON IF DATA HAS NEXT PAGE */}
-        </Box>
-      )}
+      <Box maxW={1120} px={[10, 15, 20]} mx="auto" my={[10, 15, 20]}>
+        <CardList cards={formattedData} />
+
+        {hasNextPage && (
+          <Button
+            mt={10}
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+          >
+            {isFetchingNextPage ? 'Carregando...' : 'Carregar mais'}
+          </Button>
+        )}
+      </Box>
     </>
   );
 }
